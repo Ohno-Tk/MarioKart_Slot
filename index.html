@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>スロット</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <style>
+    #slots {
+      display: flex;
+    }
+    .slot {
+			border: 1px solid #000000;
+      width: 25%;
+    }
+  </style>
+</head>
+<body>
+	<div id="slots">
+		<div class="slot">
+      <p>キャラ</p>
+			<img class="symbol" src="./img/char_01.png">
+			<button class="stop">ストップ</button>
+		</div>
+		<div class="slot">
+      <p>カート</p>
+			<img class="symbol" src="./img/kart_01.png">
+			<button class="stop">ストップ</button>
+		</div>
+		<div class="slot">
+      <p>タイヤ</p>
+			<img class="symbol" src="./img/tire_01.png">
+			<button class="stop">ストップ</button>
+		</div>
+		<div class="slot">
+      <p>グライダー</p>
+			<img class="symbol" src="./img/glider_01.png">
+			<button class="stop">ストップ</button>
+		</div>
+	</div>
+	<button id="start">スタート</button>
+	<script>
+		$(document).ready(function(){
+			// バイク・有効化フラグ
+			var flgbike = true;
+
+			// バギー・有効化フラグ
+			var flgbuggy = true;
+
+			// スロットの回転速度
+			var speed = 200;
+			// スロットのタイマー
+			var timers = [null, null, null, null];
+			// スロットの画像リスト
+			// キャラクター
+			var characterlist = [
+				"./img/char_01.png",
+				"./img/char_02.png",
+				"./img/char_03.png",
+				"./img/char_04.png",
+				"./img/char_05.png",
+				"./img/char_06.png",
+				"./img/char_07.png",
+				"./img/char_08.png",
+				"./img/char_09.png",
+				"./img/char_10.png",
+				"./img/char_11.png",
+				"./img/char_12.png",
+				"./img/char_13.png",
+				"./img/char_14.png",
+				"./img/char_15.png",
+				"./img/char_16.png",
+				"./img/char_17.png",
+				"./img/char_18.png",
+				"./img/char_19.png",
+				"./img/char_20.png",
+				"./img/char_21.png",
+				"./img/char_22.png",
+				"./img/char_23.png",
+				"./img/char_24.png",
+				"./img/char_25.png",
+				"./img/char_26.png",
+				"./img/char_27.png",
+				"./img/char_28.png",
+				"./img/char_29.png",
+				"./img/char_30.png",
+				"./img/char_31.png",
+				"./img/char_32.png",
+				"./img/char_33.png",
+				"./img/char_34.png",
+				"./img/char_35.png",
+				"./img/char_36.png",
+				"./img/char_37.png",
+				"./img/char_38.png",
+				"./img/char_39.png",
+				"./img/char_40.png",
+				"./img/char_41.png",
+				"./img/char_42.png",
+				"./img/char_43.png"
+			];
+			// カートの画像
+			var kartlist =
+			[
+				"./img/kart_01.png",
+				"./img/kart_02.png",
+				"./img/kart_03.png",
+				"./img/kart_04.png",
+				"./img/kart_05.png",
+				"./img/kart_06.png",
+				"./img/kart_07.png",
+				"./img/kart_08.png",
+				"./img/kart_09.png",
+				"./img/kart_10.png",
+				"./img/kart_11.png",
+				"./img/kart_12.png",
+				"./img/kart_13.png",
+				"./img/kart_14.png",
+				"./img/kart_15.png",
+				"./img/kart_16.png",
+				"./img/kart_17.png",
+				"./img/kart_18.png",
+				"./img/kart_19.png",
+				"./img/kart_20.png",
+				"./img/kart_21.png",
+				"./img/kart_22.png",
+				"./img/kart_23.png",
+				"./img/kart_24.png",
+				"./img/kart_25.png",
+				"./img/kart_26.png",
+				"./img/kart_27.png",
+				"./img/kart_28.png",
+				"./img/kart_29.png",
+				"./img/kart_30.png",
+				"./img/kart_31.png",
+				"./img/kart_32.png",
+				"./img/kart_33.png",
+				"./img/kart_34.png",
+				"./img/kart_35.png",
+				"./img/kart_36.png",
+				"./img/kart_37.png",
+				"./img/kart_38.png"
+			];
+			// バイクの画像
+			var bikelist =
+			[
+				"./img/kart_20.png",
+				"./img/kart_21.png",
+				"./img/kart_22.png",
+				"./img/kart_23.png",
+				"./img/kart_24.png",
+				"./img/kart_25.png",
+				"./img/kart_26.png",
+				"./img/kart_27.png",
+				"./img/kart_28.png",
+				"./img/kart_29.png",
+				"./img/kart_30.png",
+				"./img/kart_31.png"
+			];
+			// バギーの画像
+			var buggylist =
+			[
+				"./img/kart_32.png",
+				"./img/kart_33.png",
+				"./img/kart_34.png",
+				"./img/kart_35.png",
+				"./img/kart_36.png",
+				"./img/kart_37.png",
+				"./img/kart_38.png"
+			];
+			// タイヤの画像
+			var wheellist =
+			[
+				"./img/tire_01.png",
+				"./img/tire_02.png",
+				"./img/tire_03.png",
+				"./img/tire_04.png",
+				"./img/tire_05.png",
+				"./img/tire_06.png",
+				"./img/tire_07.png",
+				"./img/tire_08.png",
+				"./img/tire_09.png",
+				"./img/tire_10.png",
+				"./img/tire_11.png",
+				"./img/tire_12.png",
+				"./img/tire_13.png",
+				"./img/tire_14.png",
+				"./img/tire_15.png",
+				"./img/tire_16.png",
+				"./img/tire_17.png",
+				"./img/tire_18.png",
+				"./img/tire_19.png",
+				"./img/tire_20.png",
+				"./img/tire_21.png",
+				"./img/tire_22.png"
+			];
+			// グライダーの画像
+			var gliderlist =
+			[
+				"./img/glider_01.png",
+				"./img/glider_02.png",
+				"./img/glider_03.png",
+				"./img/glider_04.png",
+				"./img/glider_05.png",
+				"./img/glider_06.png",
+				"./img/glider_07.png",
+				"./img/glider_08.png",
+				"./img/glider_09.png",
+				"./img/glider_10.png",
+				"./img/glider_11.png",
+				"./img/glider_12.png",
+				"./img/glider_13.png",
+				"./img/glider_14.png",
+				"./img/glider_15.png"
+			];
+
+			// バイクの画像を追加。
+			//if(flgbike == true)
+			//{
+			//	for(let i = 0; i < bikelist.length; i++)
+			//	{
+			//		kartlist[kartlist.length + i] = bikelist[i];
+			//	}
+			//}
+//
+			//if(flgbuggy == true)
+			//{
+			//	for(let i = 0; i < buggylist.length; i++)
+			//	{
+			//		kartlist[kartlist.length + i] = buggylist[i];
+			//	}
+			//}
+
+			// スロットを回す関数
+			function spincharacter(slot_index) {
+				var $slot = $(".slot").eq(slot_index);
+				var $symbol = $slot.children(".symbol");
+				var current_index = characterlist.indexOf($symbol.attr("src"));
+				var next_index = (current_index + 1) % characterlist.length;
+				$symbol.attr("src", characterlist[next_index]);
+				// タイマーをセット
+				timers[slot_index] = setTimeout(function() {
+					spincharacter(slot_index);
+				}, speed);
+			}
+
+			// カートスロット
+			function spinkart(slot_index) {
+				var $slot = $(".slot").eq(slot_index);
+				var $symbol = $slot.children(".symbol");
+				var current_index = kartlist.indexOf($symbol.attr("src"));
+				var next_index = (current_index + 1) % kartlist.length;
+				$symbol.attr("src", kartlist[next_index]);
+				// タイマーをセット
+				timers[slot_index] = setTimeout(function() {
+					spinkart(slot_index);
+				}, speed);
+			}
+
+			// タイヤスロット
+			function spinwheel(slot_index) {
+				var $slot = $(".slot").eq(slot_index);
+				var $symbol = $slot.children(".symbol");
+				var current_index = wheellist.indexOf($symbol.attr("src"));
+				var next_index = (current_index + 1) % wheellist.length;
+				$symbol.attr("src", wheellist[next_index]);
+				// タイマーをセット
+				timers[slot_index] = setTimeout(function() {
+					spinwheel(slot_index);
+				}, speed);
+			}
+
+			// グライダースロット
+			function spinglider(slot_index) {
+				var $slot = $(".slot").eq(slot_index);
+				var $symbol = $slot.children(".symbol");
+				var current_index = gliderlist.indexOf($symbol.attr("src"));
+				var next_index = (current_index + 1) % gliderlist.length;
+				$symbol.attr("src", gliderlist[next_index]);
+				// タイマーをセット
+				timers[slot_index] = setTimeout(function() {
+					spinglider(slot_index);
+				}, speed);
+			}
+
+			// スタートボタンを押した時の処理
+			$("#start").click(function() {
+				for (var i = 0; i < timers.length; i++) {
+
+					if(i == 0)
+					{
+						spincharacter(i);
+					}
+					else if(i == 1)
+					{
+						spinkart(i);
+					}
+					else if(i == 2)
+					{
+						spinwheel(i);
+					}
+					else if(i == 3)
+					{
+						spinglider(i);
+					}
+				}
+			});
+
+			// ストップボタンを押した時の処理
+			$(".stop").click(function() {
+				// クリックされたストップボタンのスロットを止める
+				var slot_index = $(".stop").index(this);
+				clearTimeout(timers[slot_index]);
+			});
+		});
+	</script>
+</body>
+</html>
